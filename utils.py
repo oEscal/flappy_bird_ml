@@ -2,7 +2,7 @@ import math
 
 
 def sigmoid(x):
-	return 1 / (1 + math.pow(math.e, x))
+	return 1 / (1 + math.pow(math.e, 2*x))
 
 
 def get_index_of_value_interval_vector(vector, value):

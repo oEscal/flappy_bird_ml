@@ -6,8 +6,8 @@ from training import IntelligentBird
 from genetic_algorithm import crossover
 
 
-POPULATION_SIZE = 1000
-MUTATION_RATE = 0.01
+POPULATION_SIZE = 500
+MUTATION_RATE = 0.1
 
 
 class Pipe:
@@ -93,6 +93,7 @@ class Bird:
 
 
 def main():
+	nn_size = 3
 	generation_number = 1
 
 	clock = pygame.time.Clock()
@@ -107,7 +108,7 @@ def main():
 			15,
 			screen.get_width(),
 			screen.get_height(),
-			IntelligentBird(screen.get_width(), screen.get_height())
+			IntelligentBird(nn_size, screen.get_width(), screen.get_height())
 		) for i in range(POPULATION_SIZE)
 	]
 	dead_players = []
@@ -117,7 +118,7 @@ def main():
 
 	score = 0
 	delta_time = time.time()
-	time_bt_pipes = 2.3  # 1 second
+	time_bt_pipes = 2.7  # 1 second
 
 	while not done:
 		screen.fill((76, 188, 252))
@@ -167,20 +168,18 @@ def main():
 		text_gen = text.get_rect(centerx = screen.get_width() - 10)
 		screen.blit(text, text_gen)
 
-		pygame.display.update()
-		clock.tick(60)
-
 		# implementation of ml
 		for player in players:
 			horizontal_distance = pipes[0].x - player.position[0]
 			vertical_distance = pipes[0].top - player.position[1]
 
-			if player.brain.decision(horizontal_distance, vertical_distance):
+			if player.brain.decision(horizontal_distance, vertical_distance, player.position[1]):
 				player.handleKeys()
 
 		if len(dead_players) == POPULATION_SIZE:
 			new_brains = crossover(
 				[dp.brain for dp in dead_players],
+				3,
 				screen.get_width(),
 				screen.get_height(),
 				MUTATION_RATE
@@ -202,6 +201,9 @@ def main():
 
 			score = 0
 			delta_time = time.time()
+
+		pygame.display.update()
+		clock.tick(60)
 
 
 main()
